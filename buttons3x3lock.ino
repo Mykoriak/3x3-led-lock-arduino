@@ -1,20 +1,19 @@
-int tuchPins[9] = {2, 3, 4, 5, 6, 7, 8, 9, 10};
+int tuchPins[9] = {2, 3, 4, 5, 6, 7, 8, 9, 10};  //пины к которым подключены кнопки
 bool tuchPinsEnable[9] = {true, true, true, true, false, true, true, true, true};
     
-const byte ledRows[3] = {A0, A1, A2}; //+
-const byte ledCols[3] = {A3, A4, A5}; //-
+const byte ledRows[3] = {A0, A1, A2}; // Led матрица +
+const byte ledCols[3] = {A3, A4, A5}; // Led матрица -
 
-int code[9] = {5, 7, 9, 1, 3, 2, 4, 6, 8};
+int code[9] = {5, 7, 9, 1, 3, 2, 4, 6, 8}; // код который надо ввести
 int i, state = 0;
 
 int ledmatrix[3][3] = { {0,0,0}, {0,0,0}, {0,0,0} }; //обернено перша одиничка то 9 третя то 7
 
 int blinkCount = 0;
 unsigned long previousMillis = 0;
-const long interval = 700;           // интервал между включение/выключением светодиода (1 секунда = 1000)
+const long interval = 700;           // интервал между включение/выключением светодиодов при победе (1 секунда = 1000)
 
 void setup() {
-   Serial.begin(9600); //delete
   for (i = 0; i < 9; i++) {
     pinMode(tuchPins[i], INPUT);
   }
@@ -34,10 +33,10 @@ void loop() {
    unsigned long currentMillis = millis();
    
     
-   if (currentMillis - previousMillis >= interval && blinkCount < 4) {
+   if (currentMillis - previousMillis >= interval && blinkCount < 4) { // 4 количество раз сколько должны мигнуть светодиоды перед стартом новой игры
     // сохраняем время последнего переключения
     previousMillis = currentMillis;
- Serial.println("win!!");
+
     // если светодиод не горит, то зажигаем, и наоборот
     if (ledmatrix[0][0] == 0) {
       for (int c = 0; c < 3; c++){
@@ -56,9 +55,8 @@ void loop() {
     }
    }
 
-   if (blinkCount == 4) 
+   if (blinkCount == 4) // 4 количество раз сколько должны мигнуть светодиоды перед стартом новой игры
    {
-    Serial.println("new game start");
      blinkCount = 0;
      state = 0;
       for (int p = 0; p < 9; p++){
@@ -82,23 +80,12 @@ void loop() {
     LedOn(code[state]);
     state++;
     
-    Serial.print(tuchPinsEnable[0]);
-    Serial.print(tuchPinsEnable[1]);
-    Serial.print(tuchPinsEnable[2]);
-    Serial.print(tuchPinsEnable[3]);
-    Serial.print(tuchPinsEnable[4]);
-    Serial.print(tuchPinsEnable[5]);
-    Serial.print(tuchPinsEnable[6]);
-    Serial.print(tuchPinsEnable[7]);
-    Serial.println(tuchPinsEnable[8]);
+    
   }
-  for (int q = 1; q < 9; q++) //з 1 тому шо первий сенсор все видає HIGH
+  for (int q = 0; q < 9; q++)
   {
-    //Serial.println(tuchPinsEnable[code[state]-1]);
     if (q != code[state]-1 && digitalRead(tuchPins[q]) == HIGH && tuchPinsEnable[q] == true) {
-      Serial.print(q+1);
-      Serial.println(" wrong");
-      Serial.println(tuchPinsEnable[code[state]-1]);
+    
       state = 0;
       for (int p = 0; p < 9; p++){
        tuchPinsEnable[p] = true;
@@ -111,7 +98,6 @@ void loop() {
       }
     }
   }
- printclickkey();
  }
  ledsRefresh();
 }
@@ -166,52 +152,4 @@ void LedOn(int number) {
       break;
   }
   
-}
-
-void printclickkey() { 
-if (digitalRead(tuchPins[0])==HIGH)
- {
-    //Serial.println("1"); 
-    //LedOn(1);
- }
- if (digitalRead(tuchPins[1])==HIGH)
- {
-    Serial.println("2");
-     //LedOn(2);
- }
- if (digitalRead(tuchPins[2])==HIGH)
- {
-    Serial.println("3"); 
-    //LedOn(3);
- }
- if (digitalRead(tuchPins[3])==HIGH)
- {
-    Serial.println("4");
-    //LedOn(4);
- }
- if (digitalRead(tuchPins[4])==HIGH)
- {
-    Serial.println("5"); 
-    //LedOn(5);
- }
- if (digitalRead(tuchPins[5])==HIGH)
- {
-    Serial.println("6"); 
-    //LedOn(6);
- }
- if (digitalRead(tuchPins[6])==HIGH)
- {
-    Serial.println("7"); 
-    //LedOn(7);
- }
- if (digitalRead(tuchPins[7])==HIGH)
- {
-    Serial.println("8"); 
-    //LedOn(8);
- }
- if (digitalRead(tuchPins[8])==HIGH)
- {
-    Serial.println("9"); 
-    //LedOn(9);
- }
 }
